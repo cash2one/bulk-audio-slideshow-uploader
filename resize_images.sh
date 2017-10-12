@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -
 
 # This script takes a folder full of images and saves new, resized images that have been 
 # either pillarboxed or letterboxed.
@@ -6,10 +6,10 @@
 #----------------------------------------------------------------
 # SETTINGS
 image_dir="initial_sample_data/set1/images"
-n_files=5                                         # Can this be detected automatically?
-files=`ls ${image_dir}/*.jpg | head -${n_files}`  # Broaden to include more than jpg?
+files=`ls ${image_dir}/*.jpg`                     # Broaden to include more than jpg?
 x=1280											  # New image width
 y=720 											  # New image height
+# What is best size for uploading? Square?
 
 #----------------------------------------------------------------
 
@@ -19,6 +19,7 @@ pad=${x}:${y}:(ow-iw)/2:(oh-ih)/2"
 i=0                                               # Can we prepend 0s?
 
 for f in ${files}; do
-  ffmpeg -nostats -loglevel error -i $f -vf $vf_params ${image_dir}/${i}.PNG
+  outfile=${image_dir}/$(printf %03d ${i}).PNG
+  ffmpeg -nostats -loglevel error -i $f -vf $vf_params ${outfile}
   i=$((i+1))
 done
