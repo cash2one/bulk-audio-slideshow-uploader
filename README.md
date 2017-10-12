@@ -1,6 +1,6 @@
 ## Overview
 
-This project enables the creation and uploading of automatically generated videos from a large collection of rare recordings that are out of copyright. Each item in the collection contains audio, imagery, and text metadata. 
+This project enables the creation and uploading of automatically generated videos from a large collection of rare recordings that are out of copyright. Each item in the collection contains audio, images, and text metadata. 
 
 ### Sub-tasks:
 
