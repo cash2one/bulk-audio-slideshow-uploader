@@ -5,7 +5,8 @@
 
 #----------------------------------------------------------------
 # SETTINGS
-image_dir="initial_sample_data/set1/images"
+# image_dir="initial_sample_data/set1/images"
+image_dir="batch_test_environment/frontera/MUS_33JPG"
 files=`ls ${image_dir}/*.jpg`                     # Broaden to include more than jpg?
 x=1280											  # New image width
 y=720 											  # New image height
@@ -21,5 +22,6 @@ i=0                                               # Can we prepend 0s?
 for f in ${files}; do
   outfile=${image_dir}/$(printf %03d ${i}).PNG
   ffmpeg -nostats -loglevel error -i $f -vf $vf_params ${outfile}
+  echo ffmpeg -nostats -loglevel error -i $f -vf $vf_params ${outfile}
   i=$((i+1))
 done

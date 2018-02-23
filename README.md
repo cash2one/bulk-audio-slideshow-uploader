@@ -12,6 +12,7 @@ This project enables the creation and uploading of automatically generated video
 
 ### To do
 
+- Rewrite movie generator script to take main audio path, image path, other image directory (write in python?)
 - Create a shell script that will make and upload a batch of videos within a specified range within the test_environment folder, containing 4 videos.
 
 ### Other ideas:
