@@ -58,7 +58,6 @@ def get_video_upload_command(title, description, file_path, thumbnail_path=None)
                title, description, tags, thumbnail_path, file_path)
 
 
-
 def resize_images(image_path_list, x=1280, y=720):
 
     resized_image_paths = []
