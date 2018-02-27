@@ -62,7 +62,7 @@ def get_video_upload_command(title, description, file_path, thumbnail_path=None)
         return 'youtube-upload --title="{}" --description="{}" --category=Music --tags="{}" {}'.format(
                title, description, tags, file_path)
     else:
-        return 'youtube-upload --title="{}" --description="{}" --category=Musicaaa --tags="{}" --thumbnail="{}" {}'.format(
+        return 'youtube-upload --title="{}" --description="{}" --category=Music --tags="{}" --thumbnail="{}" {}'.format(
                title, description, tags, thumbnail_path, file_path)
 
 
@@ -249,6 +249,6 @@ if __name__ == '__main__':
 
     # make_slideshows_and_upload_from_spreadsheet(int(argv[1]), int(argv[2]))
 
-    make_slideshows_and_upload_from_spreadsheet(argv[1], argv[2])
+    make_slideshows_and_upload_from_spreadsheet(int(argv[1]), int(argv[2]))
 
     print("Time elapsed: {} s".format(round(time.time() - t0, 3)))
