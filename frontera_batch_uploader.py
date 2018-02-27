@@ -149,12 +149,14 @@ def make_video_from_image_and_mp3_paths(image_paths, audio_path, overwrite=False
     return slideshow_w_audio_path
 
 
-def verify_spreadsheet_files():
+def verify_spreadsheet(row_start=2, row_end=None):
     error_log = []
     with open(GUIDE_PATH) as f:
         file_reader = list(csv.reader(f))
-        for i, row in enumerate(file_reader[1:]):
-            row_number = i + 2
+        if row_end is None:
+            row_end = len(file_reader)
+        for i, row in enumerate(file_reader[row_start - 1: row_end - 1]):
+            row_number = i + row_start
             row_errors = []
 
             for field, content in zip(('title', 'description', 'tags', 'record_number'),
@@ -176,9 +178,7 @@ def verify_spreadsheet_files():
 
             if row_errors:
                 error_log.append(row_errors)
-    for row_errors in error_log:
-        for error in row_errors:
-            print(error)
+    return error_log
 
 
 def make_slideshows_and_upload_from_spreadsheet(row_start, row_end, cleanup=True):
@@ -187,22 +187,28 @@ def make_slideshows_and_upload_from_spreadsheet(row_start, row_end, cleanup=True
     with open(GUIDE_PATH) as f_read, open(output_path, "w") as f_write:
         file_reader = list(csv.reader(f_read))
         file_writer = csv.writer(f_write)
-        heading_output = file_reader[0] + ['Automatic upload result'] + ['URL']
-        file_writer.writerow(heading_output)
+
+        spreadsheet_errors = verify_spreadsheet(row_start, row_end)
+
+        if spreadsheet_errors:
+            error_header = 'Aborted batch upload due to spreadsheet errors:'
+            file_writer.writerow(error_header)
+            file_writer.writerows(spreadsheet_errors)
+            print(error_header)
+            print(spreadsheet_errors)
+            quit()
+
+        print("Verified spreadsheet contents...")
+
+        output_headers = file_reader[0] + ['Automatic upload result'] + ['URL']
+        file_writer.writerow(output_headers)
         for row in file_reader[row_start - 1: row_end - 1]:
             row_output = row[:]
             title = row[0]
             description = row[1].replace(';', '\n')
             image_paths = [get_correct_os_path(path) for path in row[2:6] if path.strip()]
-            if not all(os.path.isfile(ip) for ip in image_paths):
-                row_output.append('Failed. Skipped image processing because of invalid image path.')
-                file_writer.writerow(row_output)
-                continue
+
             audio_path = get_correct_os_path(row[7])
-            if not os.path.isfile(audio_path):
-                row_output.append('Failed. Skipped audio processing because of invalid audio path.')
-                file_writer.writerow(row_output)
-                continue
 
             tags = row[8].replace(';', ',')
 
@@ -242,7 +248,7 @@ if __name__ == '__main__':
     test_mp3_path = 'frontera/4Stmp3/4St_1044_V-234ME.mp3'
 
     t0 = time.time()
-    # verify_spreadsheet_files()
+    # verify_spreadsheet()
 
     # print(resize_images(test_img_list))
 
