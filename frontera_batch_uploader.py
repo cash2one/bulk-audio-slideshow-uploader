@@ -6,7 +6,7 @@ from math import ceil
 import subprocess
 import time
 
-GUIDE_FILE = 'guide_20180222_typo.csv'
+GUIDE_FILE = 'guide.csv'
 CREDITS_FILE = 'arhoolie_credit_screen_small.PNG'
 MAIN_DIR = 'frontera'
 GUIDE_PATH = os.path.join(MAIN_DIR, GUIDE_FILE)
@@ -56,8 +56,7 @@ def get_video_audio_joining_command(audio_path, video_path, output_path):
            video_path, audio_path, output_path)
 
 
-def get_video_upload_command(title, description, file_path, thumbnail_path=None):
-    tags = 'Mexico, Arhoolie'
+def get_video_upload_command(title, description, tags, file_path, thumbnail_path=None):
     if thumbnail_path is None:
         return 'youtube-upload --title="{}" --description="{}" --category=Music --tags="{}" {}'.format(
                title, description, tags, file_path)
@@ -205,13 +204,15 @@ def make_slideshows_and_upload_from_spreadsheet(row_start, row_end, cleanup=True
                 file_writer.writerow(row_output)
                 continue
 
+            tags = row[8].replace(';', ',')
+
             if len(image_paths) == 0:
                 thumbnail_path = CREDITS_PATH
             else:
                 thumbnail_path = resize_images(image_paths[:1], x=640, y=360, thumbnail=True)[0]
 
             movie_path = make_video_from_image_and_mp3_paths(image_paths, audio_path, overwrite=True)
-            upload_command = get_video_upload_command(title, description, movie_path, thumbnail_path)
+            upload_command = get_video_upload_command(title, description, tags, movie_path, thumbnail_path)
             print('Executing video upload command...')
             p = subprocess.Popen(upload_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             p.wait()
