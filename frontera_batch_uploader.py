@@ -154,7 +154,10 @@ def verify_spreadsheet(row_start=2, row_end=None):
     with open(GUIDE_PATH) as f:
         file_reader = list(csv.reader(f))
         if row_end is None:
-            row_end = len(file_reader)
+            row_end = len(file_reader) + 1
+        elif row_end > len(file_reader) + 1:
+            error_log.append(['Spreadsheet has fewer rows than specified upper bound'])
+            return error_log
         for i, row in enumerate(file_reader[row_start - 1: row_end - 1]):
             row_number = i + row_start
             row_errors = []
@@ -202,7 +205,8 @@ def make_slideshows_and_upload_from_spreadsheet(row_start, row_end, cleanup=True
 
         output_headers = file_reader[0] + ['Automatic upload result'] + ['URL']
         file_writer.writerow(output_headers)
-        for row in file_reader[row_start - 1: row_end - 1]:
+        for i, row in enumerate(file_reader[row_start - 1: row_end - 1]):
+            print("Processing row {} ({} / {})".format(row_start + i, i + 1, row_end - row_start))
             row_output = row[:]
             title = row[0]
             description = row[1].replace(';', '\n')
